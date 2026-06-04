@@ -5,7 +5,7 @@ __lua__
 --202606030941
 --pizza shop
 function _init()
-	
+	ingredients = [1,2,3,4,5,6]
 end
 
 function _draw()
@@ -14,34 +14,41 @@ function _draw()
 end
 
 function _update()
-	
+	click()
 end
 -->8
 function draw_shop()
---back wall
-	rectfill(0,0,127,27,13) 
---floor
-	rectfill(0,28,127,65,2)
---countertop
-	rectfill(0,66,127,127,4)
---door
- spr(1,40,20)
---pizza
-	circfill(23,95,20,15)
---pepperoni
- spr(16,80,75,2,2)
---bell pepper
- spr(18,95,75,2,2)
---mushroom
- spr(20,80,90,2,2)
---sausage
- spr(22,95,90,2,2)
---cheese
- spr(24,80,105,2,2)
---pineapple
- spr(26,95,105,2,2)
+	rectfill(0,0,127,27,13)--back wall
+	rectfill(0,28,127,65,2)--floor
+	rectfill(0,66,127,127,4)--countertop
+ spr(1,40,20)--door
+	circfill(23,95,20,15)--pizza
+ spr(16,80,75,2,2)--pepperoni
+ spr(18,95,75,2,2)--bell pepper
+ spr(20,80,90,2,2)--mushroom
+ spr(22,95,90,2,2)--sausage
+ spr(24,80,105,2,2)--cheese
+ spr(26,95,105,2,2)--pineapple
 end
 
+-->8
+function click()
+		
+end
+
+function select_ingredient()
+	col   = (mx - panel_x) \ cell_width
+	row   = (my - panel_y) \ cell_height
+	index = (row * 2) + col + 1
+	ingredient = ingredients[index]
+end
+
+function btn_hit(button)
+	if mouse_x >= button.x and mouse_y >= button.y and mouse_x <= button.x + button.w and mouse_y <= button.y + button.h
+		return true
+		else return false
+	end
+end
 __gfx__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000077777700022220000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
