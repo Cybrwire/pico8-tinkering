@@ -15,8 +15,8 @@ function _init()
   make_ingredient_btn(95,90,4,22),--sausage
   make_ingredient_btn(80,105,5,24),--cheese
   make_ingredient_btn(95,105,6,26),--pineapple
-  {x=112,y=97,w=16,h=8,action=function() undo() end,spr=28},
-		{x=112,y=113,w=16,h=8,action=function() submit_pizza() end,spr=44},
+  {x=112,y=97,w=16,h=8,action=function() undo() end,spr=44},
+		{x=112,y=113,w=16,h=8,action=function() submit_pizza() end,spr=28},
 	}
 	pza= {x=23,y=95,r=20,c=15}
 end
@@ -105,6 +105,10 @@ end
 function update_ingredients(_id)
  local x,y = xy_on_pizza()	
  add(ingredients,{x=x,y=y,spr=top_spr[_id]})
+end
+
+function undo()
+	deli(ingredients)
 end
 __gfx__
 0000000000000000b776000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
