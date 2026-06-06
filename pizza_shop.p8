@@ -23,6 +23,7 @@ function _draw()
 	draw_shop()
 	draw_ingredients()
 	draw_cursor()
+	dr_curs_hilite()
 end
 
 function _update()
@@ -52,10 +53,18 @@ end
 function draw_cursor()
 	spr(2,mx,my)
 end
+
+function dr_curs_hilite()
+	if clicked then
+		circfill(mx,my,6,12)
+	end
+	clicked = false
+end
 -->8
+--button controls
 function click()
 	if stat(34) == 1 and btn_lst == 0 then
-			
+			clicked = true
 	end
 	btn_lst = stat(34)
 end
