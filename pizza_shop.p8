@@ -6,7 +6,9 @@ __lua__
 --pizza shop
 function _init()
 	poke(0x5f2d, 7)
+	cspeed = 1
 	ingredients = {}
+	customers = {}
 	top_spr = {48,50,52,54,56,58}
 	buttons = {
   make_ingredient_btn(80,75,1,16),--pepperoni
@@ -96,6 +98,12 @@ function btn_hit(button)
 		else return false
 	end
 end
+
+function undo()
+	deli(ingredients)
+end
+
+
 -->8
 --gameplay
 function xy_on_pizza()
@@ -104,11 +112,26 @@ end
 
 function update_ingredients(_id)
  local x,y = xy_on_pizza()	
- add(ingredients,{x=x,y=y,spr=top_spr[_id]})
+ add(ingredients,{id=_id,x=x,y=y,spr=top_spr[_id]})
 end
 
-function undo()
-	deli(ingredients)
+
+
+
+-->8
+--customers
+function new_customer(_spr,_x,_y)
+	local _order = new_order()	
+	add(customers, {spr=_spr,x=_x,y=_y,ty=70,speed=c_speed,order=_order})
+end
+
+function new_order()
+	size = flr(rnd(19)+2)
+	local order = {}
+	for i = 1,size do
+		add(order, flr(rnd(6)+1))
+	end
+	return order
 end
 __gfx__
 0000000000000000b776000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
