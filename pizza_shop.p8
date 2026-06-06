@@ -41,7 +41,7 @@ function draw_shop()
 	rectfill(0,66,127,127,4)--countertop
  spr(1,40,20)--door
  circfill(pza.x,pza.y,pza.r,pza.c)--pizza
-	--draw ingredients tubs
+	--draw buttons
 	for b in all(buttons) do
         if b.id then
          spr(b.spr,b.x,b.y,2,2)
@@ -104,7 +104,7 @@ end
 
 function update_ingredients(_id)
  local x,y = xy_on_pizza()	
- add(ingredients,{id=_id,x=x,y=y,spr=top_spr[_id]})
+ add(ingredients,{x=x,y=y,spr=top_spr[_id]})
 end
 __gfx__
 0000000000000000b776000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
