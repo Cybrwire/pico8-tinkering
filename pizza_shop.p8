@@ -216,8 +216,12 @@ function customer_move()
 		elseif c.state == 'leaving' then
 			if c.y > door.y then
 				c.y -= c.speed
+			elseif c.y == door.y then
+			 c.state = 'gone'
 			end
+		
 		end
+		
 	end
 end
 
