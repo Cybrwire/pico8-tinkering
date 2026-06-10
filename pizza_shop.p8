@@ -7,6 +7,7 @@ __lua__
 function _init()
 	poke(0x5f2d, 7)
 	c_speed         = 1
+	door            = {spr=1,x=40,y=20}
 	pza             = {x=23,y=95,r=20,c=15}
 	ingredients     = {}
 	customers       = {}
@@ -45,7 +46,7 @@ function draw_shop()
 	rectfill(0,0,127,27,13)--back wall
 	rectfill(0,28,127,65,2)--floor
 	rectfill(0,66,127,127,4)--countertop
- spr(1,40,20)--door
+ spr(door.spr,door.x,door.y)--door
  circfill(pza.x,pza.y,pza.r,pza.c)--pizza
  circfill(pza.x,pza.y,pza.r-3,8)--sauce
 	--draw buttons
@@ -81,7 +82,7 @@ end
 
 function draw_customers()
 	for c in all(customers) do
-		if c.state == 'far' then
+		if c.state == 'far'or c.state == 'leaving' then
 			spr(c.spr,c.x,c.y)
 		elseif c.state == 'near' then
 			spr(c.big,c.x-10,c.y-23,4,4)
@@ -144,10 +145,11 @@ function submit_pizza()
 	
 	for id,cnt in pairs(p) do
 		if cnt ~= o[id] then
-			return false
+			return false --pizza is wrong
 		end
 	end 
-	return true
+	customers[1].state = 'leaving' --pizza is good
+	clear_pizza()
 end
 
 
@@ -183,6 +185,10 @@ function tally_size(_tally)
 	
 	return _count
 end
+
+function clear_pizza()
+	ingredients = {}
+end
 -->8
 --customers
 function new_customer(_spr,_x,_y)
@@ -201,10 +207,16 @@ end
 
 function customer_move()
 	for c in all(customers) do
-		if c.y < c.ty then
-			c.y += c.speed
-		else
-				c.state = 'near'
+		if c.state == 'far' then
+			if c.y < c.ty then
+				c.y += c.speed
+			else
+					c.state = 'near'
+			end
+		elseif c.state == 'leaving' then
+			if c.y > door.y then
+				c.y -= c.speed
+			end
 		end
 	end
 end
