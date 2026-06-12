@@ -7,6 +7,7 @@ __lua__
 function _init()
 	poke(0x5f2d, 7)
 	game_state      = 'title'
+	title_crds      = {40,40}
 	c_speed         = 1
 	door            = {spr=1,x=40,y=20}
 	pza             = {x=23,y=95,r=20,c=15}
@@ -74,18 +75,18 @@ function draw_shop()
 end
 
 function draw_title()
- local crds = {40,40}
- local x = crds[1]
+ 
+ local x = title_crds[1]
 	for i=203,207 do
-		spr(i,x,crds[2])
+		spr(i,x,title_crds[2])
 		x+=10
 	end	
-	local x = crds[1]+5
+	local x = title_crds[1]+5
 	for i=219,222 do
-		spr(i,x,crds[2]+20)
+		spr(i,x,title_crds[2]+20)
 		x+=10
 	end
-	print('press z', crds[1]+10,crds[2]+33,7)
+	print('press z', title_crds[1]+10,title_crds[2]+33,7)
 end
 
 function draw_ingredients()
