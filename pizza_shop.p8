@@ -7,7 +7,9 @@ __lua__
 function _init()
 	poke(0x5f2d, 7)
 	game_state      = 'title'
-	close_time      = 540
+	close_time      = 5400
+	tim_lim         = close_time
+	clock_pos       = {x=115,y=10}
 	title_crds      = {40,30}
 	c_speed         = 1
 	door            = {spr=1,x=40,y=20}
@@ -45,6 +47,7 @@ function _draw()
 		draw_cursor_hilite()
 		draw_customers(customers[1])
 		draw_customer_order()
+		draw_timer()
 	elseif game_state == 'gameover' then
 		draw_gameover()
 	end
@@ -153,6 +156,12 @@ function draw_customer_order()
 			x -= 10
 		end
 	end
+end
+
+function draw_timer()
+	t = (close_time / tim_lim) - .75
+	line(clock_pos.x,clock_pos.y,clock_pos.x+cos(t)*5,clock_pos.y+sin(t)*5,7)
+	circ(clock_pos.x,clock_pos.y,6,7)
 end
 -->8
 --button controls
