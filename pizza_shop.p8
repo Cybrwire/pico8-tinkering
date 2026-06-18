@@ -18,10 +18,10 @@ function _init()
 	
 	ingredients_spr = {48,50,52,54,56,58}
 	customers= {
-	 new_customer(3,64,40,20),
-	 new_customer(4,68,40,20),
-	 new_customer(5,72,40,20),
-	 new_boss(6,128,40,20),
+	 new_customer(3,64,40,20,false),
+	 new_customer(4,68,40,20,false),
+	 new_customer(5,72,40,20,false),
+	 new_customer(6,128,40,20,true),--boss
 	}
 	buttons  = {
   make_ingredient_btn(80,75,1,16),--pepperoni
@@ -142,6 +142,7 @@ function draw_customers(c)
 			spr(c.spr,c.x,c.y)
 		elseif c.state == 'near' then
 			spr(c.big,c.x-10,c.y-23,4,4)
+			if c.boss == true then print('boss',5,5,7) end
 		end
 	end
 end
@@ -253,13 +254,18 @@ function clear_pizza()
 end
 -->8
 --customers
-function new_customer(_spr,_big,_x,_y)
-	local _order = new_order()	
-	return {spr=_spr,big=_big,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,order=_order}
+function new_customer(_spr,_big,_x,_y,_boss)
+	local _order = new_order(_boss)	
+	return {spr=_spr,big=_big,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,order=_order,boss=_boss}
 end
 
-function new_order()
-	size = flr(rnd(19)+2)
+function new_order(_boss)
+
+	if _boss then
+		size = flr(rnd(10)+10)
+	else
+		size = flr(rnd(10)+2)
+	end
 	local order = {}
 	for i = 1,size do
 		add(order, flr(rnd(6)+1))
@@ -285,12 +291,6 @@ function customer_move(c)
 		end
 	end
 	
-end
-
-function new_boss(_spr,_big,_x,_y)
-	local b = new_customer(_spr,_big,_x,_y)
-	b.boss = true
-	return b
 end
 
 function remove_customer()
