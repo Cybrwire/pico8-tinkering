@@ -17,12 +17,18 @@ function _init()
 	ingredients     = {}
 	
 	ingredients_spr = {48,50,52,54,56,58}
-	customers= {
+	customers = {
 	 --new_customer(3,64,40,20,false),
 	 --new_customer(4,68,40,20,false),
 	 --new_customer(5,72,40,20,false),
 	 new_customer(6,128,40,20,true),--boss
 	}
+	
+	kids = {
+		{x=40,y=20,tx=16,ty=4,spr=7},
+		{x=40,y=20,tx=64,ty=4,spr=8},
+	}
+	
 	buttons  = {
   make_ingredient_btn(80,75,1,16),--pepperoni
   make_ingredient_btn(95,75,2,18),--bell pepper
@@ -49,6 +55,9 @@ function _draw()
 		draw_customers(customers[1])
 		draw_customer_order()
 		draw_timer()
+		if customers[1].phase=='second' then
+			draw_kids(kids)
+		end
 	elseif game_state == 'gameover' then
 		draw_gameover()
 	end
@@ -65,6 +74,9 @@ function _update()
 		mx,my=stat(32),stat(33)
 		click()
 		customer_move(customers[1])
+		if customers[1].phase=='second' then
+			move_kids(kids)
+		end
 	end
 	
 end
@@ -171,9 +183,11 @@ function draw_timer()
 	circ(clock_pos.x,clock_pos.y,6,7)
 end
 
-function draw_kids(_c)
-	spr(7,_c.x-24,_c.y-16)
-	spr(8,_c.x+24,_c.y-16)
+function draw_kids()
+ for i in all(kids) do
+		spr(7,i.x,i.y)
+		spr(8,i.x,i.y)
+	end
 end
 -->8
 --button controls
@@ -325,6 +339,16 @@ function customer_move(_c)
 		end
 	end
 	
+end
+
+function move_kids(_k)
+	if _k[1].x > _k[1].tx then
+		_k[1].x-=c_speed
+	end
+
+	if _k[2].x < _k[2].tx then
+		_k[2].x+=c_speed
+	end
 end
 
 function remove_customer()
