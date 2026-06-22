@@ -188,6 +188,14 @@ function draw_kids()
 		spr(i.spr,i.x,i.y)
 	end
 end
+
+function strtsecondphase()
+	if customers[1].state == 'near' then
+		--draw small sprite again
+		--go back to door
+		--come back in with kids behind
+	end
+end
 -->8
 --button controls
 function click()
@@ -238,6 +246,7 @@ function submit_pizza()
 	
 	if c.boss then
 	 if c.phase == 'first' then
+	 	strtsecondphase()
 	  c.phase = 'second'
 	  c.big = 132
 	  c.order = new_order(c)
