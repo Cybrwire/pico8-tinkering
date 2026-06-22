@@ -50,14 +50,18 @@ function _draw()
 		draw_title()
 	elseif game_state == 'play' then
 		draw_ingredients()
-		draw_cursor()
-		draw_cursor_hilite()
 		draw_customers(customers[1])
 		draw_customer_order()
 		draw_timer()
 		if customers[1].phase=='second' then
 			draw_kids(kids)
 		end
+		draw_cursor()
+		draw_cursor_hilite()
+------- debug ---------
+		print(customers[1].state,5,5,7)	
+		print(customers[1].phase,5,13,7)	
+		
 	elseif game_state == 'gameover' then
 		draw_gameover()
 	end
@@ -150,18 +154,18 @@ end
 
 function draw_customers(_c)
 	
-	if _c then
+	if _c.state == 'far' or _c.state == 'leaving' then
+		spr(_c.spr,_c.x,_c.y)
+	elseif _c.state == 'near' then
 		if _c.boss and _c.phase == 'second' then
+			spr(_c.big2,_c.x-10,_c.y-23,4,4)	
+			
+			draw_kids()
+		else 
 			spr(_c.big,_c.x-10,_c.y-23,4,4)
-			draw_kids(_c)
-		else	
-			if _c.state == 'far'or _c.state == 'leaving' then
-				spr(_c.spr,_c.x,_c.y)
-			elseif _c.state == 'near' then
-				spr(_c.big,_c.x-10,_c.y-23,4,4)
-			end
 		end
 	end
+	
 end
 
 function draw_customer_order()
@@ -189,13 +193,11 @@ function draw_kids()
 	end
 end
 
-function strtsecondphase()
-	if customers[1].state == 'near' then
+
+		
 		--draw small sprite again
 		--go back to door
 		--come back in with kids behind
-	end
-end
 -->8
 --button controls
 function click()
@@ -246,10 +248,12 @@ function submit_pizza()
 	
 	if c.boss then
 	 if c.phase == 'first' then
-	 	strtsecondphase()
-	  c.phase = 'second'
-	  c.big = 132
-	  c.order = new_order(c)
+	 	c.state = 'leaving'
+	 	if c.state == 'near' and c.phase == 'second' then			
+		  c.phase = 'second'
+		  c.big = 132
+		  c.order = new_order(c)
+		 end
 	 elseif c.phase == 'second' then
 	  c.state = 'leaving'
   end
@@ -301,7 +305,7 @@ function new_customer(_spr,_big,_x,_y,_boss)
 	local c = {}
 	
 	if _boss then
-		c = {spr=_spr,big=_big,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,boss=_boss,phase='first'}
+		c = {spr=_spr,big=_big,big2=132,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,boss=_boss,phase='first'}
 	else 
 		c = {spr=_spr,big=_big,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,boss=_boss}
 	end
@@ -330,6 +334,16 @@ function new_order(_c)
 end
 
 function customer_move(_c)
+	
+	if _c.state == 'near' then
+		
+	end
+	
+	
+	
+	
+	
+	
 	if _c then
 		if _c.state == 'far' then
 			if _c.y < _c.ty then
@@ -341,10 +355,24 @@ function customer_move(_c)
 			if _c.y > door.y then
 				_c.y -= _c.speed
 			elseif _c.y <= door.y then
-			 remove_customer()
+				if _c.boss then
+					_c.t = 30
+					_c.state = 'waiting'
+				else 
+			  remove_customer()
+				end
 			end
-		
+		elseif _c.state == 'waiting' then
+			
+			if _c.t > 0 then
+				_c.t-=1
+				
+			else 
+				_c.state = 'far'
+				_c.phase = 'second'
+			end
 		end
+		
 	end
 	
 end
