@@ -25,8 +25,8 @@ function _init()
 	}
 	
 	kids = {
-		{x=40,y=20,tx=16,ty=4,spr=7},
-		{x=40,y=20,tx=64,ty=4,spr=8},
+		{x=40,y=21,tx=16,ty=30,spr=7},
+		{x=40,y=21,tx=64,ty=30,spr=8},
 	}
 	
 	buttons  = {
@@ -185,8 +185,7 @@ end
 
 function draw_kids()
  for i in all(kids) do
-		spr(7,i.x,i.y)
-		spr(8,i.x,i.y)
+		spr(i.spr,i.x,i.y)
 	end
 end
 -->8
@@ -344,10 +343,14 @@ end
 function move_kids(_k)
 	if _k[1].x > _k[1].tx then
 		_k[1].x-=c_speed
+	elseif _k[1].y < _k[1].ty then
+		_k[1].y+=c_speed
 	end
 
 	if _k[2].x < _k[2].tx then
 		_k[2].x+=c_speed
+	elseif _k[2].y < _k[2].ty then
+		_k[2].y+=c_speed
 	end
 end
 
