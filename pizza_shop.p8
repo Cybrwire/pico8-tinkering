@@ -249,8 +249,6 @@ function submit_pizza()
 	if c.boss then
 	 if c.phase == 'first' then
 	 	c.state = 'leaving'
-	  c.big   = 132
-	  c.order = new_order(c)
 	 elseif c.phase == 'second' then
 	  c.state = 'leaving'
   end
@@ -356,6 +354,7 @@ function customer_move(_c)
 				if _c.boss then
 					_c.state = 'far'
 					_c.phase = 'second'
+					_c.order = new_order(_c)
 				else
 					remove_customer()
 				end
