@@ -157,7 +157,7 @@ function draw_customers(_c)
 	if _c.state == 'far' or _c.state == 'leaving' then
 		spr(_c.spr,_c.x,_c.y)
 	elseif _c.state == 'near' then
-		if _c.boss and _c.phase == 'second' then
+		if _c.boss and _c.state == 'far' and _c.phase == 'second' then
 			spr(_c.big2,_c.x-10,_c.y-23,4,4)	
 			
 			draw_kids()
@@ -249,15 +249,12 @@ function submit_pizza()
 	if c.boss then
 	 if c.phase == 'first' then
 	 	c.state = 'leaving'
-	 	if c.state == 'near' and c.phase == 'second' then			
-		  c.phase = 'second'
-		  c.big = 132
-		  c.order = new_order(c)
-		 end
+	  c.big = 132
+	  c.order = new_order(c)
 	 elseif c.phase == 'second' then
 	  c.state = 'leaving'
   end
-	else c.state = 'leaving' --pizza is good
+	else c.state = 'leaving'
 	end
 	clear_pizza()
 end
@@ -335,10 +332,11 @@ end
 
 function customer_move(_c)
 	
-	if _c.state == 'near' then
-		
+	if _c then --refactor the function to be cleaner
+		if _c.state == 'near' then
+			
+		end
 	end
-	
 	
 	
 	
