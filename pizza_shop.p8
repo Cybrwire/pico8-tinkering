@@ -19,8 +19,8 @@ function _init()
 	ingredients_spr = {48,50,52,54,56,58}
 	customers = {
 	 --new_customer(3,64,40,20,false),
-	 --new_customer(4,68,40,20,false),
-	 --new_customer(5,72,40,20,false),
+	 new_customer(4,68,40,20,false),
+	 new_customer(5,72,40,20,false),
 	 new_customer(6,128,40,20,true),--boss
 	}
 	
@@ -157,7 +157,7 @@ function draw_customers(_c)
 	if _c.state == 'far' or _c.state == 'leaving' then
 		spr(_c.spr,_c.x,_c.y)
 	elseif _c.state == 'near' then
-		if _c.boss and _c.state == 'far' and _c.phase == 'second' then
+		if _c.boss and _c.phase == 'second' then
 			spr(_c.big2,_c.x-10,_c.y-23,4,4)	
 			
 			draw_kids()
@@ -232,9 +232,9 @@ function submit_pizza()
 	local p_list = {}
 	for i in all(ingredients) do add(p_list,i.id) end
 	
-	local c = customers[1]
-	local p = tally_ingredients(p_list)
-	local o = tally_ingredients(c.order)
+	local c  = customers[1]
+	local p  = tally_ingredients(p_list)
+	local o  = tally_ingredients(c.order)
 	local ps = tally_size(p)
 	local os = tally_size(o)
 	
@@ -249,7 +249,7 @@ function submit_pizza()
 	if c.boss then
 	 if c.phase == 'first' then
 	 	c.state = 'leaving'
-	  c.big = 132
+	  c.big   = 132
 	  c.order = new_order(c)
 	 elseif c.phase == 'second' then
 	  c.state = 'leaving'
@@ -332,33 +332,20 @@ end
 
 function customer_move(_c)
 	
-	if _c then --refactor the function to be cleaner
-		if _c.state == 'near' then
-			
-		end
-	end
-	
-	
-	
-	
-	
 	if _c then
 		if _c.state == 'far' then
 			if _c.y < _c.ty then
-				_c.y += _c.speed
+				_c.y     += _c.speed
 			else
 					_c.state = 'near'
 			end
 		elseif _c.state == 'leaving' then
 			if _c.y > door.y then
-				_c.y -= _c.speed
+				_c.y    -= _c.speed
 			elseif _c.y <= door.y then
-				if _c.boss then
-					_c.t = 30
-					_c.state = 'waiting'
-				else 
-			  remove_customer()
-				end
+				_c.state = 'waiting'
+				_c.t     = 30
+				
 			end
 		elseif _c.state == 'waiting' then
 			
@@ -366,8 +353,12 @@ function customer_move(_c)
 				_c.t-=1
 				
 			else 
-				_c.state = 'far'
-				_c.phase = 'second'
+				if _c.boss then
+					_c.state = 'far'
+					_c.phase = 'second'
+				else
+					remove_customer()
+				end
 			end
 		end
 		
