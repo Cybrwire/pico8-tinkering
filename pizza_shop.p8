@@ -21,6 +21,7 @@ function _init()
 	 --new_customer(3,64,nil,40,20,false),
 	 --new_customer(4,68,nil,40,20,false),
 	 --new_customer(5,72,nil,40,20,false),
+	 new_customer(5,72,nil,40,20,false),
 	 new_customer(6,128,132,40,20,true),--boss
 	}
 	
@@ -165,21 +166,26 @@ function draw_customers(_c)
 end
 
 function draw_customer_order(_c)
-	local tally = tally_ingredients(customers[1].order)
-	local x = 120
-	local t = close_time
+	local tally  = tally_ingredients(_c.order)
+	local t      = close_time / 60
 	local offset = (1/6)
-	local r = 30
+	local r      = 35
+	local x,y    = 120,30
 	
 	for id,cnt in pairs(tally) do
 		if _c.state == 'near' then
 			if _c.phase == 'second' then
-			 spr(ingredients_spr[id],(_c.x+cos(t+(id*offset))*r),(_c.y+sin(t+(id*offset))*r))
+			 x = (_c.x+cos(t+(id*offset))*r)+4
+			 y = (_c.y+sin(t+(id*offset))*r)-10			  
+			 spr(ingredients_spr[id],x,y)
+			 print(cnt,x,y+10,7)
 			else
-				spr(ingredients_spr[id],x,30)
+				spr(ingredients_spr[id],x,y)
+			 print(cnt,x+1,38,7)
 			end	
-				print(cnt,x+1,38,7)
+				
 				x -= 10
+				
 		end
 	end
 end
