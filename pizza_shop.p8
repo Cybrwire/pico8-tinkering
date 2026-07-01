@@ -18,10 +18,10 @@ function _init()
 	
 	ingredients_spr = {48,50,52,54,56,58}
 	customers = {
-	 --new_customer(3,64,40,20,false),
-	 new_customer(4,68,40,20,false),
-	 new_customer(5,72,40,20,false),
-	 new_customer(6,128,40,20,true),--boss
+	 --new_customer(3,64,nil,40,20,false),
+	 --new_customer(4,68,nil,40,20,false),
+	 --new_customer(5,72,nil,40,20,false),
+	 new_customer(6,128,132,40,20,true),--boss
 	}
 	
 	kids = {
@@ -51,7 +51,7 @@ function _draw()
 	elseif game_state == 'play' then
 		draw_ingredients()
 		draw_customers(customers[1])
-		draw_customer_order()
+		draw_customer_order(customers[1])
 		draw_timer()
 		if customers[1].phase=='second' then
 			draw_kids(kids)
@@ -133,12 +133,8 @@ end
 
 function draw_ingredients()
  for i in all(ingredients) do
-        if i.id then
-         spr(i.spr,i.x,i.y)
-        else
-         spr(i.spr,i.x,i.y)
-        end
-    end
+  spr(i.spr,i.x,i.y)   
+ end
 end
 
 function draw_cursor()
@@ -168,15 +164,22 @@ function draw_customers(_c)
 	
 end
 
-function draw_customer_order()
+function draw_customer_order(_c)
 	local tally = tally_ingredients(customers[1].order)
 	local x = 120
+	local t = close_time
+	local offset = (1/6)
+	local r = 30
 	
 	for id,cnt in pairs(tally) do
-		if customers[1].state == 'near' then
-			spr(ingredients_spr[id],x,30)
-			print(cnt,x+1,38,7)
-			x -= 10
+		if _c.state == 'near' then
+			if _c.phase == 'second' then
+			 spr(ingredients_spr[id],(_c.x+cos(t+(id*offset))*r),(_c.y+sin(t+(id*offset))*r))
+			else
+				spr(ingredients_spr[id],x,30)
+			end	
+				print(cnt,x+1,38,7)
+				x -= 10
 		end
 	end
 end
@@ -192,12 +195,6 @@ function draw_kids()
 		spr(i.spr,i.x,i.y)
 	end
 end
-
-
-		
-		--draw small sprite again
-		--go back to door
-		--come back in with kids behind
 -->8
 --button controls
 function click()
@@ -296,11 +293,11 @@ function clear_pizza()
 end
 -->8
 --customers
-function new_customer(_spr,_big,_x,_y,_boss)	
+function new_customer(_spr,_big,_big2,_x,_y,_boss)	
 	local c = {}
 	
 	if _boss then
-		c = {spr=_spr,big=_big,big2=132,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,boss=_boss,phase='first'}
+		c = {spr=_spr,big=_big,big2=_big2,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,boss=_boss,phase='first'}
 	else 
 		c = {spr=_spr,big=_big,x=_x,y=_y,ty=57,t=30,state='far',speed=c_speed,boss=_boss}
 	end
