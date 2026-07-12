@@ -43,10 +43,12 @@ function _draw()
  
  ---------debug----------
  if hit then
- 	print('hit',2,120,0)
+ 	print('hit',24,96,0)
  end
  print(plr.last.x,2,104,0)
  print(plr.last.y,2,112,0)
+ print(plr.st,2,96,0)
+ 
 end
 -->8
 --map
@@ -155,8 +157,7 @@ function move(_o)
 		add(bld_changes,{old=ckey, new=nkey, bld=_o})		
 		
 	end
-		
-	if _o.x ~= _o.last.x and _o.y ~= _o.last.y then
+	if _o.st ~= 'gone' then
 	 _o.x,_o.y = cx,cy
  end
 end
@@ -178,9 +179,8 @@ function push_bld(_x,_y,_v)
 end
 
 function fall_in_hole(_o)
- 	_o.state = 'gone'
+ 	_o.st = 'gone'
 		if _o.sp == t_plr then
-		 _o.st = 'norm'
 		 plr.x,plr.y = plr.last.x,plr.last.y
 		end
 end
