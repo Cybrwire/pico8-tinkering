@@ -14,7 +14,7 @@ function _init()
 	t_ice  = 4
 	t_hol  = 5
 	t_rdir = 6
-	
+	fall_timer  = 0 
 	plr  = {sp=t_plr,st='norm',hp=3,x=1,y=3,last={x=0,y=0},v={x=0,y=0}}
 	blds = {}
 	bld_changes = {}
@@ -115,9 +115,14 @@ function move(_o)
 		if blds[key] and _o.st ~= 'slide' then
    push_bld(nx,ny,_o.v)
 		elseif mv == t_flr then
+			
 			cx,cy = nx,ny
 			_o.last.x,_o.last.y = cx,cy
-			_o.st = 'norm'
+			if fall_timer > 0 then
+				fall_timer -= 1
+			else
+				_o.st = 'norm'
+			end
 			_o.v.x,_o.v.y = 0,0
   elseif mv == t_ice then
    cx,cy = nx,ny
@@ -179,6 +184,7 @@ function push_bld(_x,_y,_v)
 end
 
 function fall_in_hole(_o)
+  fall_timer = 30
  	_o.st = 'gone'
 		if _o.sp == t_plr then
 		 plr.x,plr.y = plr.last.x,plr.last.y
