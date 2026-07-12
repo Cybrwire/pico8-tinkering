@@ -91,7 +91,7 @@ end
 -->8
 --movement
 function plr_inp()
- if plr.st == 'norm' then
+ if plr.st == 'norm' or (plr.st == 'slide' and plr.v.x == 0 and plr.v.y == 0) then
 		if btnp(⬆️) then
 			plr.v.y = -speed
 		end
@@ -139,6 +139,7 @@ function move(_o)
    redirect(_o,t_rdir[mv])
   else
    --bump sound
+   _o.v.x,_o.v.y = 0,0
 		end
 	elseif _o.sp == t_bld then
 		local ckey = cx .. ',' .. cy
