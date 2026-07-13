@@ -117,7 +117,12 @@ function move(_o)
 	
 	if _o.sp == t_plr then
 		if blds[key] and _o.st ~= 'slide' then
-   push_bld(nx,ny,_o.v)
+   local nbx   = blds[key].x + plr.v.x
+   local nby   = blds[key].y + plr.v.y
+   local b_mv  = can_move(nbx,nby)
+   if b_mv and not blds[nbx..','..nby] then
+    push_bld(nx,ny,_o.v) 
+   end
 		elseif mv == t_flr then
 			cx,cy = nx,ny
 			_o.last.x,_o.last.y = cx,cy
