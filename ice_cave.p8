@@ -101,14 +101,14 @@ function plr_inp()
  if plr.st == 'norm' or (plr.st == 'slide' and plr.v.x == 0 and plr.v.y == 0) then
 		if btnp(⬆️) then
 			plr.v.y = -speed
-		end
-		if btnp(⬇️) then
+		
+		elseif btnp(⬇️) then
 		 plr.v.y = speed
-		end
-		if btnp(⬅️) then
+		
+		elseif btnp(⬅️) then
 			plr.v.x = -speed
-		end
-		if btnp(➡️) then
+		
+		elseif btnp(➡️) then
 			plr.v.x = speed
 		end
 	end
