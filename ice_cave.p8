@@ -7,7 +7,7 @@ __lua__
 
 function _init()
 	lvl    = 1 
-	speed  = 1
+	speed  = .6
 	t_plr  = 1
 	t_bld  = 2
 	t_flr  = 3
@@ -16,7 +16,7 @@ function _init()
 	t_rdir = {[6]={x=1,y=0},[7]={x=0,y=-1},[8]={x=-1,y=0},[9]={x=0,y=1}}
 	
 	fall_timer  = 0 
-	plr    = {sp=t_plr,st='norm',hp=3,x=5,y=11,last={x=0,y=0},v={x=0,y=0}}
+	plr    = {sp=t_plr,st='norm',hp=3,x=5,y=11,visx=5*8,visy=11*8,last={x=0,y=0},v={x=0,y=0}}
 	blds        = {}
 	bld_changes = {}
 	
@@ -32,6 +32,7 @@ function _update()
  for k,v in pairs(blds) do
  	move(v)
  end
+ smooth_move()
  update_blds()
 end
 
@@ -39,12 +40,12 @@ function _draw()
  cls()
  map(0,0,0,0,127,127)
  if plr.st == 'norm' or plr.st == 'slide' then
-  spr(plr.sp,plr.x*8,plr.y*8)
+  spr(plr.sp,plr.visx,plr.visy)
  end
  
  for k,v in pairs(blds) do
   if v.st == 'norm' or v.st == 'slide' then
- 	 spr(v.sp,v.x*8,v.y*8)
+ 	 spr(v.sp,v.visx,v.visy)
  	end
  end
  
@@ -81,6 +82,8 @@ function mk_bld (_x,_y)
 	local bld = {}
 	bld.x   = _x
 	bld.y   = _y
+	bld.visx= _x*8
+	bld.visy= _y*8
 	bld.sp  = t_bld
 	bld.v   = {x=0,y=0}
 	bld.st  = 'norm'
@@ -107,16 +110,16 @@ end
 function plr_inp()
  if plr.st == 'norm' or (plr.st == 'slide' and plr.v.x == 0 and plr.v.y == 0) then
 		if btnp(⬆️) then
-			plr.v.y = -speed
+			plr.v.y = -1
 		
 		elseif btnp(⬇️) then
-		 plr.v.y = speed
+		 plr.v.y = 1
 		
 		elseif btnp(⬅️) then
-			plr.v.x = -speed
+			plr.v.x = -1
 		
 		elseif btnp(➡️) then
-			plr.v.x = speed
+			plr.v.x = 1
 		end
 	end
 end
@@ -209,6 +212,24 @@ function can_move(_x,_y)
  else 
   return false		
 	end
+end
+
+function smooth_move()
+ if abs(plr.visx - plr.x*8) > 1 and plr.st == 'falling' then
+  plr.st = 'gone'
+ end
+	plr.visx = plr.visx + ((plr.x*8)-plr.visx)*speed
+	plr.visy = plr.visy + ((plr.y*8)-plr.visy)*speed
+	
+	for k,v in pairs(blds) do
+	 if abs(v.visx - v.x*8) > 1 and v.st == 'falling' then
+   v.st = 'gone'
+  end		
+		v.visx = v.visx + ((v.x*8)-v.visx)*speed
+		v.visy = v.visy + ((v.y*8)-v.visy)*speed
+	 
+	end
+ 
 end
 -->8
 --tile effects
