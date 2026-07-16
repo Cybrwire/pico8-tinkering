@@ -16,7 +16,7 @@ function _init()
 	t_rdir = {[6]={x=1,y=0},[7]={x=0,y=-1},[8]={x=-1,y=0},[9]={x=0,y=1}}
 	
 	fall_timer  = 0 
-	plr    = {sp=t_plr,st='norm',hp=3,x=4,y=2,last={x=0,y=0},v={x=0,y=0}}
+	plr    = {sp=t_plr,st='norm',hp=3,x=5,y=11,last={x=0,y=0},v={x=0,y=0}}
 	blds        = {}
 	bld_changes = {}
 	
@@ -43,19 +43,21 @@ function _draw()
  end
  
  for k,v in pairs(blds) do
- 	spr(v.sp,v.x*8,v.y*8)
+  if v.st == 'norm' or v.st == 'slide' then
+ 	 spr(v.sp,v.x*8,v.y*8)
+ 	end
  end
  
  ---------debug----------
  if hit then
  	--print('hit',24,96,0)
  end
- local key = '4,11'
+ local key = '1,11'
  local sb  = blds[key]
  print(last_change,2,104,0)
  print(pushlog,2,112,0)
  if sb then
- 	print('v:x=='..sb.v.x..','..'y=='..sb.v.y,2,120,0)
+ 	print('bld:x='..sb.x..','..'y='..sb.y,2,120,0)
  end
 end
 -->8
@@ -81,6 +83,7 @@ function mk_bld (_x,_y)
 	bld.y   = _y
 	bld.sp  = t_bld
 	bld.v   = {x=0,y=0}
+	bld.st  = 'norm'
 	
 	local key = (_x) .. "," .. (_y)
 	blds[key] = bld
@@ -90,11 +93,15 @@ function update_blds()
 	for i in all(bld_changes) do
 	 last_change = i.old .. " -> " .. i.new
 		local bld   = i.bld
-	 blds[i.old] = nil
-	 blds[i.new] = bld
+		blds[i.old] = nil
+		if bld.st ~= 'gone' then
+	  blds[i.new] = bld
+	 end
 	end
 	bld_changes = {}
 end
+
+
 -->8
 --movement
 function plr_inp()
@@ -130,6 +137,7 @@ function move(_o)
 	   local b_mv  = can_move(nbx,nby)
 	   if b_mv and not blds[nbx..','..nby] then
 	    push_bld(nx,ny,_o.v) 
+	   _o.v.x,_o.v.y = 0,0
 	   end
 	  elseif _o.st == 'slide' then
 	   _o.v.x,_o.v.y = 0,0
@@ -160,33 +168,35 @@ function move(_o)
 		
 		
 	elseif _o.sp == t_bld then
-		local ckey = cx .. ',' .. cy
-		local nkey = nx .. ',' .. ny
-
-			if blds[nkey] then
-				 hit = true
-				 _o.v.x,_o.v.y = 0,0
-			elseif mv == t_flr then
-				cx,cy = nx,ny
-				_o.st = 'norm'
-				_o.v.x,_o.v.y = 0,0
-	  elseif mv == t_ice then
-	   cx,cy = nx,ny
-	   _o.st = 'slide'
-	  elseif mv == t_hol then
-	   cx,cy = nx,ny
-	  	_o.v.x,_o.v.y = 0,0
-	   fall_in_hole(_o)
-	  elseif t_rdir[mv] then
-	   cx,cy = nx,ny
-	  else
-	   --bump sound
+	 
+			local ckey = cx .. ',' .. cy
+			local nkey = nx .. ',' .. ny
+	
+				if blds[nkey] then
+					 hit = true
+					 _o.v.x,_o.v.y = 0,0
+				elseif mv == t_flr then
+					cx,cy = nx,ny
+					_o.st = 'norm'
+					_o.v.x,_o.v.y = 0,0
+		  elseif mv == t_ice then
+		   cx,cy = nx,ny
+		   _o.st = 'slide'
+		  elseif mv == t_hol then
+		   cx,cy = nx,ny
+		   fall_in_hole(_o,cx,cy)
+		   _o.v.x,_o.v.y = 0,0
+		  elseif t_rdir[mv] then
+		   cx,cy = nx,ny
+		  else
+		   --bump sound
+				end
+			
+			if _o.x ~= cx or _o.y ~= cy then
+			 add(bld_changes,{old=ckey, new=nkey, bld=_o})		
 			end
-		
-		if _o.x ~= cx or _o.y ~= cy then
-		 add(bld_changes,{old=ckey, new=nkey, bld=_o})		
 		end
-	end
+	
 	if _o.st ~= 'gone' then
 	 _o.x,_o.y = cx,cy
  end
@@ -209,11 +219,13 @@ function push_bld(_x,_y,_v)
 	blds[key].v.y = _v.y
 end
 
-function fall_in_hole(_o)
+function fall_in_hole(_o,_x,_y)
   fall_timer = 30
  	_o.st = 'gone'
 		if _o.sp == t_plr then
 		 plr.x,plr.y = plr.last.x,plr.last.y
+		elseif _o.sp == t_bld then
+			blds[_x..','.._y] = nil
 		end
 end
 
