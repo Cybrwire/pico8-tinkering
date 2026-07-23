@@ -140,7 +140,9 @@ function move(_o)
 	   local b_mv  = can_move(nbx,nby)
 	   if b_mv and not blds[nbx..','..nby] then
 	    push_bld(nx,ny,_o.v) 
-	   _o.v.x,_o.v.y = 0,0
+	    _o.v.x,_o.v.y = 0,0
+	   else
+	    _o.v.x,_o.v.y = 0,0
 	   end
 	  elseif _o.st == 'slide' then
 	   _o.v.x,_o.v.y = 0,0
