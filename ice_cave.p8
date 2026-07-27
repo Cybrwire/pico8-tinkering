@@ -23,6 +23,7 @@ function _init()
 	prv_st='',
 	st='norm',
 	hp=3,
+	spd=speed,
 	x=start_pos.x,
 	y=start_pos.y,
 	visx=start_pos.x*8,
@@ -54,7 +55,7 @@ function _draw()
  cls()
  map(0,0,0,0,127,127)
  if plr.st == 'norm' or plr.st == 'slide' or plr.st == 'trans' then
-  spr(plr.sp,plr.visx,plr.visy)
+  spr(plr.sp,plr.visx,plr.visy,1,1,last_dir)
  end
  
  for k,v in pairs(blds) do
@@ -66,6 +67,7 @@ function _draw()
  ---------debug----------
  
  print(plr.st,2,104,0)
+ print(plr.spd,2,112,0)
 end
 -->8
 --map
@@ -93,6 +95,7 @@ function mk_bld (_x,_y)
 	bld.sp  = t_bld
 	bld.v   = {x=0,y=0}
 	bld.st  = 'norm'
+	bld.spd = speed
 	
 	local key = (_x) .. "," .. (_y)
 	blds[key] = bld
@@ -123,9 +126,11 @@ function plr_inp()
 		
 		elseif btnp(⬅️) then
 			plr.v.x = -1
-		
+		 last_dir = true
 		elseif btnp(➡️) then
 			plr.v.x = 1
+			last_dir = false
+
 		end
 	end
 end
@@ -168,9 +173,9 @@ function move(_o)
    cx,cy = nx,ny
    _o.prv_st = _o.st
    if mget(plr.x,plr.y) == t_ice and plr.v.x == 0 and plr.v.y == 0 then
-    _o.st = 'norm'  	
+    _o.st  = 'norm' 
    else
-    _o.st = 'slide'
+    _o.st  = 'slide'
    end
   elseif mv == t_hol then
    cx,cy = nx,ny
@@ -195,7 +200,7 @@ function move(_o)
 			local nkey = nx .. ',' .. ny
 	
 				if blds[nkey] then
-					 hit = true
+					 hit  = true
 					 _o.v.x,_o.v.y = 0,0
 				elseif mv == t_flr then
 					cx,cy = nx,ny
@@ -237,6 +242,7 @@ function smooth_move()
  if abs(plr.visx - plr.x*8) < 1 and abs(plr.visy - plr.y*8) < 1 and plr.st == 'trans' then
   plr.st = 'gone'
  end
+ 
 	plr.visx = plr.visx + ((plr.x*8)-plr.visx)*speed
 	plr.visy = plr.visy + ((plr.y*8)-plr.visy)*speed
 	
