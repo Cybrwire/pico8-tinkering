@@ -18,17 +18,17 @@ function _init()
 	t_door = {[10]=true,[11]=true,[12]=true,[13]=true}
 	
 	fall_timer  = 0 
-	start_pos={{x=4,y=12},{x=130,y=2}}
+	start_pos={{4,12},{4,12}}
 	plr    = {
 	sp=t_plr,
 	prv_st='',
 	st='norm',
 	hp=3,
 	spd=speed,
-	x=start_pos[lvl].x,
-	y=start_pos[lvl].y,
-	visx=start_pos[lvl].x*8,
-	visy=start_pos[lvl].y*8,
+	x=start_pos[lvl][1],
+	y=start_pos[lvl][2],
+	visx=start_pos[lvl][1]*8,
+	visy=start_pos[lvl][2]*8,
 	last={x=0,y=0},
 	v={x=0,y=0}
 	}
@@ -68,7 +68,10 @@ function _draw()
  end
  
  ---------debug----------
- print(start_pos[lvl].x,2,96,0)
+ print(lvl,2,96,7)
+ print(plr.st,130,96,7)
+ print(mget(plr.x,plr.y),130,104,7)
+ 
 end
 -->8
 --map
@@ -79,7 +82,7 @@ function load_lvl(lvl)
  camx = col *128
  camy = row *128
  
-	for i = (lvl-1)*16,16 do
+	for i = (lvl-1)*16,(lvl-1)*16+15 do
 		for j = 0,16-1 do
 			
 			local t = mget(i,j)  
@@ -91,14 +94,19 @@ function load_lvl(lvl)
 		end
 	end
 	
-	plr.x = start_pos[lvl].x
-	plr.y = start_pos[lvl].y
+	plr.x    = start_pos[lvl][1]+col*16
+	plr.y    = start_pos[lvl][2]+row*16
+	plr.visx = plr.x*8
+	plr.visy = plr.y*8
+	plr.st   = 'norm' 
 end
 
 function check_lvl_win()
 	if win ~= true and t_door[mget(plr.x,plr.y)] then
+		lvl +=1
+	 plr.st = 'trans'
 		win = true
-		load_lvl(lvl+1)
+		load_lvl(lvl)
 	end
 end
 -->8
@@ -204,7 +212,6 @@ function move(_o)
   elseif t_door[mv] then
    cx,cy = nx,ny
    _o.v.x,_o.v.y = 0,0
-   door()
   else
    sfx(00)
    _o.v.x,_o.v.y = 0,0
@@ -296,11 +303,6 @@ end
 function redirect(_o,_v)
 	_o.v.x = _v.x
 	_o.v.y = _v.y
-end
-
-function door()
-	lvl +=1
-	plr.st = 'trans'
 end
 -->8
 --audio
