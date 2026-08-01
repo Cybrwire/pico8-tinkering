@@ -18,7 +18,7 @@ function _init()
 	t_door = {[10]=true,[11]=true,[12]=true,[13]=true}
 	
 	fall_timer  = 0 
-	start_pos={{2,5},{1,1},{5,5}}
+	start_pos={{2,5},{13,4},{5,5}}
 	plr    = {
 	sp=t_plr,
 	prv_st='',
@@ -34,13 +34,12 @@ function _init()
 	}
 	blds        = {}
 	bld_changes = {}
-	
 	load_lvl(lvl)
 end
 
 function _update()
  plr_inp()
- move(plr)
+ if plr.st ~= 'gone'then move(plr) end
  for k,v in pairs(blds) do
  	move(v)
  end
@@ -64,10 +63,6 @@ function _draw()
  	 spr(v.sp,v.visx,v.visy)
  	end
  end
- 
- ---------debug----------
- print(plr.st,130,96,7)
- print(fall_timer,130,104,7)
  
 end
 -->8
@@ -185,12 +180,8 @@ function move(_o)
 		elseif mv == t_flr then
 			cx,cy = nx,ny
 			_o.last.x,_o.last.y = cx,cy
-			if fall_timer > 0 then
-				fall_timer -= 1
-			else
-			 _o.prv_st = _o.st
-				_o.st     = 'norm'
-			end
+			_o.prv_st = _o.st
+			_o.st     = 'norm'
 			_o.v.x,_o.v.y = 0,0
   elseif mv == t_ice then
    cx,cy = nx,ny
@@ -222,8 +213,7 @@ function move(_o)
 			local nkey = nx .. ',' .. ny
 	
 				if blds[nkey] then
-					 hit  = true
-					 _o.v.x,_o.v.y = 0,0
+					_o.v.x,_o.v.y = 0,0
 				elseif mv == t_flr then
 					cx,cy = nx,ny
 					_o.st = 'norm'
@@ -246,7 +236,7 @@ function move(_o)
 			end
 		end
 	
-	if _o.st ~= 'gone' then
+	if _o.st ~= 'gone' and _o.st ~= 'trans' then
 	 _o.x,_o.y = cx,cy
  end
 end
@@ -315,10 +305,10 @@ function state_update()
   end
  end
  
- if plr.st == 'gone' and fall_timer == 0 then
-  plr.st = 'norm'
- elseif plr.st == 'gone' then
-  fall_timer -=1 	
+ if fall_timer > 0 and plr.st == 'gone' then
+  fall_timer -=1 
+ elseif plr.st == 'gone' and fall_timer == 0 then
+  plr.st = 'norm'	
  end
 end
 __gfx__
