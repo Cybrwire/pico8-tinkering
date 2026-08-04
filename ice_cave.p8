@@ -64,6 +64,8 @@ function _draw()
  	end
  end
  
+ ---debug
+ print(bldst,132,20,0)
 end
 -->8
 --map
@@ -121,10 +123,9 @@ end
 
 function update_blds()
 	for i in all(bld_changes) do
-	 last_change = i.old .. " -> " .. i.new
 		local bld   = i.bld
 		blds[i.old] = nil
-		if bld.st ~= 'gone' then
+		if bld.st ~= 'trans' then
 	  blds[i.new] = bld
 	 end
 	end
@@ -300,8 +301,8 @@ function state_update()
  end
  
  for k,v in pairs(blds) do
-	 if abs(v.visx - v.x*8) > 1 and v.st == 'trans' then
-   v.st = 'gone'
+	 if abs(v.visx - v.x*8) < 1 and v.st == 'trans' then
+		 v.st = 'gone'
   end
  end
  
