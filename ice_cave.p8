@@ -8,7 +8,8 @@ __lua__
 function _init()
  camx, camy = 0,0
 	lvl    = 1 
-	speed  = .6
+	vis_spd  = .6
+	slide_spd = .9
 	t_plr  = 1
 	t_bld  = 2
 	t_flr  = 3
@@ -18,7 +19,7 @@ function _init()
 	t_door = {[10]=true,[11]=true,[12]=true,[13]=true}
 	
 	fall_timer  = 0 
-	start_pos={{5,13},{1,13},{2,12}}
+	start_pos={{5,5},{13,10},{2,12}}
 	plr    = {
 	sp=t_plr,
 	prv_st='',
@@ -114,7 +115,7 @@ function mk_bld (_x,_y)
 	bld.sp  = t_bld
 	bld.v   = {x=0,y=0}
 	bld.st  = 'norm'
-	bld.spd = speed
+	bld.spd = vis_spd
 	
 	local key = (_x) .. "," .. (_y)
 	blds[key] = bld
@@ -156,6 +157,12 @@ end
 function move(_o)
  if _o.st == 'trans' then return end
 	
+	if _o.st == 'slide' then
+  _o.slide_acc = (_o.slide_acc or 0) + slide_spd
+  if _o.slide_acc < 1 then return end
+  _o.slide_acc -= 1
+ end
+ 
 	local cx  = _o.x
 	local cy  = _o.y
 	local nx  = cx + _o.v.x
@@ -192,6 +199,7 @@ function move(_o)
     _o.st  = 'norm' 
    else
     _o.st  = 'slide'
+    _o.slide_acc = 0
    end
   elseif mv == t_hol then
    cx,cy = nx,ny
@@ -253,12 +261,12 @@ function can_move(_x,_y)
 end
 
 function smooth_move()
-	plr.visx = plr.visx + ((plr.x*8)-plr.visx)*speed
-	plr.visy = plr.visy + ((plr.y*8)-plr.visy)*speed
+	plr.visx = plr.visx + ((plr.x*8)-plr.visx)*vis_spd
+	plr.visy = plr.visy + ((plr.y*8)-plr.visy)*vis_spd
 	
 	for k,v in pairs(blds) do		
-		v.visx = v.visx + ((v.x*8)-v.visx)*speed
-		v.visy = v.visy + ((v.y*8)-v.visy)*speed 
+		v.visx = v.visx + ((v.x*8)-v.visx)*vis_spd
+		v.visy = v.visy + ((v.y*8)-v.visy)*vis_spd 
 	end
  
 end
