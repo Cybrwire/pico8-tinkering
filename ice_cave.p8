@@ -315,7 +315,7 @@ function state_update()
  end
  
  for k,v in pairs(blds) do
-	 if abs(v.visx - v.x*8) < 1  and v.st == 'fall' then
+	 if abs(v.visx - v.x*8) < 1  and abs(v.visy - v.y*8) < 1 and v.st == 'fall' then
    fall_in_hole(v,v.x,v.y)
   elseif v.st == 'trans' then
    v.st = 'gone'
