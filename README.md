@@ -1,6 +1,6 @@
 ## Pizza Shop Trials
 
-![Play here | プレイできますよ！](https://www.lexaloffle.com/bbs/?tid=157886)
+[Play here | プレイできますよ！](https://www.lexaloffle.com/bbs/?tid=157886)
 
 ### Rules
 * Build the customers pizza and press DONE.
